@@ -6,6 +6,7 @@ import uuid
 from typing import Any, Callable, Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException, status
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
 from dag_engine import (
@@ -18,6 +19,7 @@ from dag_engine import (
     SleepNode,
 )
 from dag_engine.graph import CycleDetectedError, NodeNotFoundError
+from dag_engine.visualizer import render_graph_structure, render_execution_state, base64_to_img_tag
 from dag_engine.logger import api_logger
 
 app = FastAPI(title="DAG Execution Engine", version="1.0.0")
@@ -268,3 +270,40 @@ def get_node_state(graph_id: str, node_id: str) -> NodeStatusResponse:
         duration_s=rec.get("duration_s"),
         attempt=rec["attempt"],
     )
+
+
+# ---------------------------------------------------------------------------
+# Routes — Visualisation
+# ---------------------------------------------------------------------------
+
+@app.get(
+    "/graphs/{graph_id}/visualize/structure",
+    response_class=HTMLResponse,
+    summary="Render bare DAG topology as an HTML img tag (PNG embedded as base64)",
+)
+def visualize_structure(graph_id: str) -> HTMLResponse:
+    g = _get_graph(graph_id)
+    try:
+        encoded = render_graph_structure(g)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Render failed: {exc}")
+    html = base64_to_img_tag(encoded, alt=f"DAG structure for {graph_id}")
+    api_logger.info(f"[{graph_id}] Structure visualisation served")
+    return HTMLResponse(content=html)
+
+
+@app.get(
+    "/graphs/{graph_id}/visualize/execution",
+    response_class=HTMLResponse,
+    summary="Render DAG with nodes coloured by execution status as an HTML img tag (PNG embedded as base64)",
+)
+def visualize_execution(graph_id: str) -> HTMLResponse:
+    g      = _get_graph(graph_id)
+    engine = _get_engine(graph_id)
+    try:
+        encoded = render_execution_state(g, engine.state)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Render failed: {exc}")
+    html = base64_to_img_tag(encoded, alt=f"Execution state for {graph_id}")
+    api_logger.info(f"[{graph_id}] Execution visualisation served")
+    return HTMLResponse(content=html)
