@@ -73,7 +73,12 @@ class ExecutionStateStore:
     def reset_node(self, node_id: str) -> None:
         """Reset a single node back to PENDING (for retry / partial re-run)."""
         with self._lock:
-            self._records[node_id] = NodeRecord(node_id=node_id)
+            old_record = self._records[node_id]
+            # Preserve attempt count while resetting execution state
+            self._records[node_id] = NodeRecord(
+                node_id=node_id,
+                attempt=old_record.attempt  # Keep the attempt counter
+            )
         self._persist()
 
     # ------------------------------------------------------------------
