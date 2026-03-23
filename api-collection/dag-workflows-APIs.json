@@ -3,232 +3,10 @@
   "version": "1",
   "items": [
     {
-      "type": "http",
-      "name": "Register graph",
-      "filename": "Register graph.bru",
-      "seq": 3,
-      "settings": {
-        "encodeUrl": false
-      },
-      "tags": [],
-      "request": {
-        "url": "http://localhost:8000/graphs",
-        "method": "POST",
-        "headers": [
-          {
-            "name": "Content-Type",
-            "value": "application/json",
-            "enabled": true
-          }
-        ],
-        "params": [],
-        "body": {
-          "mode": "json",
-          "json": "{\n  \"graph_id\": \"demo\"\n}",
-          "formUrlEncoded": [],
-          "multipartForm": [],
-          "file": []
-        },
-        "script": {},
-        "vars": {},
-        "assertions": [],
-        "tests": "",
-        "docs": "",
-        "auth": {
-          "mode": "inherit"
-        }
-      }
-    },
-    {
-      "type": "http",
-      "name": "Add the root node (data ingestion)",
-      "filename": "Add the root node (data ingestion).bru",
-      "seq": 2,
-      "settings": {
-        "encodeUrl": false
-      },
-      "tags": [],
-      "request": {
-        "url": "http://localhost:8000/graphs/demo/nodes",
-        "method": "POST",
-        "headers": [
-          {
-            "name": "Content-Type",
-            "value": "application/json",
-            "enabled": true
-          }
-        ],
-        "params": [],
-        "body": {
-          "mode": "json",
-          "json": "{\n  \"node_id\": \"ingest\",\n  \"node_type\": \"lambda\",\n  \"lambda_expr\": \"{'raw': [1, 2, 3, 4, 5]}\"\n}",
-          "formUrlEncoded": [],
-          "multipartForm": [],
-          "file": []
-        },
-        "script": {},
-        "vars": {},
-        "assertions": [],
-        "tests": "",
-        "docs": "",
-        "auth": {
-          "mode": "inherit"
-        }
-      }
-    },
-    {
-      "type": "http",
-      "name": "sum node",
-      "filename": "sum node.bru",
-      "seq": 4,
-      "settings": {
-        "encodeUrl": false
-      },
-      "tags": [],
-      "request": {
-        "url": "http://localhost:8000/graphs/demo/nodes",
-        "method": "POST",
-        "headers": [
-          {
-            "name": "Content-Type",
-            "value": "application/json",
-            "enabled": true
-          }
-        ],
-        "params": [],
-        "body": {
-          "mode": "json",
-          "json": "{\n  \"node_id\": \"sum_node\",\n  \"node_type\": \"lambda\",\n  \"lambda_expr\": \"{'sum': sum(inputs['ingest']['raw'])}\"\n}",
-          "formUrlEncoded": [],
-          "multipartForm": [],
-          "file": []
-        },
-        "script": {},
-        "vars": {},
-        "assertions": [],
-        "tests": "",
-        "docs": "",
-        "auth": {
-          "mode": "inherit"
-        }
-      }
-    },
-    {
-      "type": "http",
-      "name": "Mean node",
-      "filename": "Mean node.bru",
-      "seq": 5,
-      "settings": {
-        "encodeUrl": false
-      },
-      "tags": [],
-      "request": {
-        "url": "http://localhost:8000/graphs/demo/nodes",
-        "method": "POST",
-        "headers": [
-          {
-            "name": "Content-Type",
-            "value": "application/json",
-            "enabled": true
-          }
-        ],
-        "params": [],
-        "body": {
-          "mode": "json",
-          "json": "{\n  \"node_id\": \"mean_node\",\n  \"node_type\": \"lambda\",\n  \"lambda_expr\": \"{'mean': sum(inputs['ingest']['raw']) / len(inputs['ingest']['raw'])}\"\n}",
-          "formUrlEncoded": [],
-          "multipartForm": [],
-          "file": []
-        },
-        "script": {},
-        "vars": {},
-        "assertions": [],
-        "tests": "",
-        "docs": "",
-        "auth": {
-          "mode": "inherit"
-        }
-      }
-    },
-    {
-      "type": "http",
-      "name": "merge node",
-      "filename": "merge node.bru",
-      "seq": 6,
-      "settings": {
-        "encodeUrl": false
-      },
-      "tags": [],
-      "request": {
-        "url": "http://localhost:8000/graphs/demo/nodes",
-        "method": "POST",
-        "headers": [
-          {
-            "name": "Content-Type",
-            "value": "application/json",
-            "enabled": true
-          }
-        ],
-        "params": [],
-        "body": {
-          "mode": "json",
-          "json": "{\n  \"node_id\": \"merge\",\n  \"node_type\": \"lambda\",\n  \"lambda_expr\": \"{\\\"sum\\\": inputs[\\\"sum_node\\\"][\\\"sum\\\"], \\\"mean\\\": inputs[\\\"mean_node\\\"][\\\"mean\\\"]}\"\n}",
-          "formUrlEncoded": [],
-          "multipartForm": [],
-          "file": []
-        },
-        "script": {},
-        "vars": {},
-        "assertions": [],
-        "tests": "",
-        "docs": "",
-        "auth": {
-          "mode": "inherit"
-        }
-      }
-    },
-    {
-      "type": "http",
-      "name": "report node",
-      "filename": "report node.bru",
-      "seq": 7,
-      "settings": {
-        "encodeUrl": false
-      },
-      "tags": [],
-      "request": {
-        "url": "http://localhost:8000/graphs/demo/nodes",
-        "method": "POST",
-        "headers": [
-          {
-            "name": "Content-Type",
-            "value": "application/json",
-            "enabled": true
-          }
-        ],
-        "params": [],
-        "body": {
-          "mode": "json",
-          "json": "{\n  \"node_id\": \"report\",\n  \"node_type\": \"lambda\",\n  \"lambda_expr\": \"{\\\"text\\\": \\\"sum=\\\" + str(inputs[\\\"merge\\\"][\\\"sum\\\"]) + \\\" mean=\\\" + str(inputs[\\\"merge\\\"][\\\"mean\\\"])}\"\n}",
-          "formUrlEncoded": [],
-          "multipartForm": [],
-          "file": []
-        },
-        "script": {},
-        "vars": {},
-        "assertions": [],
-        "tests": "",
-        "docs": "",
-        "auth": {
-          "mode": "inherit"
-        }
-      }
-    },
-    {
       "type": "folder",
       "name": "Wire up",
       "filename": "Wire up",
-      "seq": 8,
+      "seq": 3,
       "root": {
         "request": {
           "auth": {
@@ -237,7 +15,7 @@
         },
         "meta": {
           "name": "Wire up",
-          "seq": 8
+          "seq": 3
         }
       },
       "items": [
@@ -543,7 +321,7 @@
       "type": "http",
       "name": "Validate Graph",
       "filename": "Validate Graph.bru",
-      "seq": 11,
+      "seq": 4,
       "settings": {
         "encodeUrl": false
       },
@@ -573,7 +351,7 @@
       "type": "http",
       "name": "Run",
       "filename": "Run.bru",
-      "seq": 12,
+      "seq": 5,
       "settings": {
         "encodeUrl": false
       },
@@ -610,7 +388,7 @@
       "type": "http",
       "name": "Single node state",
       "filename": "Single node state.bru",
-      "seq": 13,
+      "seq": 8,
       "settings": {
         "encodeUrl": false
       },
@@ -638,83 +416,9 @@
     },
     {
       "type": "http",
-      "name": "Bad node",
-      "filename": "Bad node.bru",
-      "seq": 9,
-      "settings": {
-        "encodeUrl": false
-      },
-      "tags": [],
-      "request": {
-        "url": "http://localhost:8000/graphs/demo/nodes",
-        "method": "POST",
-        "headers": [
-          {
-            "name": "Content-Type",
-            "value": "application/json",
-            "enabled": true
-          }
-        ],
-        "params": [],
-        "body": {
-          "mode": "json",
-          "json": "{\n  \"node_id\": \"bad_node\",\n  \"node_type\": \"fail\"\n}\n// {\n//   \"node_id\": \"bad_node\",\n//   \"node_type\": \"echo\"\n// }",
-          "formUrlEncoded": [],
-          "multipartForm": [],
-          "file": []
-        },
-        "script": {},
-        "vars": {},
-        "assertions": [],
-        "tests": "",
-        "docs": "",
-        "auth": {
-          "mode": "inherit"
-        }
-      }
-    },
-    {
-      "type": "http",
-      "name": "final report",
-      "filename": "final report.bru",
-      "seq": 10,
-      "settings": {
-        "encodeUrl": false
-      },
-      "tags": [],
-      "request": {
-        "url": "http://localhost:8000/graphs/demo/nodes",
-        "method": "POST",
-        "headers": [
-          {
-            "name": "Content-Type",
-            "value": "application/json",
-            "enabled": true
-          }
-        ],
-        "params": [],
-        "body": {
-          "mode": "json",
-          "json": "{\n  \"node_id\": \"final_report\",\n  \"node_type\": \"lambda\",\n  \"lambda_expr\": \"{\\\"done\\\": True}\"\n}",
-          "formUrlEncoded": [],
-          "multipartForm": [],
-          "file": []
-        },
-        "script": {},
-        "vars": {},
-        "assertions": [],
-        "tests": "",
-        "docs": "",
-        "auth": {
-          "mode": "inherit"
-        }
-      }
-    },
-    {
-      "type": "http",
       "name": "Retry from a node",
       "filename": "Retry from a node.bru",
-      "seq": 13,
+      "seq": 6,
       "settings": {
         "encodeUrl": false
       },
@@ -733,6 +437,412 @@
         "body": {
           "mode": "json",
           "json": "{}",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "inherit"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "Visualize Graph",
+      "filename": "Visualize Graph.bru",
+      "seq": 9,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:8000/graphs/demo/visualize/structure",
+        "method": "GET",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "inherit"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "Visualize Execution",
+      "filename": "Visualize Execution.bru",
+      "seq": 10,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:8000/graphs/demo/visualize/execution",
+        "method": "GET",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "inherit"
+        }
+      }
+    },
+    {
+      "type": "folder",
+      "name": "Add nodes",
+      "filename": "Add nodes",
+      "seq": 2,
+      "root": {
+        "request": {
+          "auth": {
+            "mode": "inherit"
+          }
+        },
+        "meta": {
+          "name": "Add nodes",
+          "seq": 2
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "Add the root node (data ingestion)",
+          "filename": "Add the root node (data ingestion).bru",
+          "seq": 2,
+          "settings": {
+            "encodeUrl": false
+          },
+          "tags": [],
+          "request": {
+            "url": "http://localhost:8000/graphs/demo/nodes",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"node_id\": \"ingest\",\n  \"node_type\": \"lambda\",\n  \"lambda_expr\": \"{'raw': [1, 2, 3, 4, 5]}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "sum node",
+          "filename": "sum node.bru",
+          "seq": 6,
+          "settings": {
+            "encodeUrl": false
+          },
+          "tags": [],
+          "request": {
+            "url": "http://localhost:8000/graphs/demo/nodes",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"node_id\": \"sum_node\",\n  \"node_type\": \"lambda\",\n  \"lambda_expr\": \"{'sum': sum(inputs['ingest']['raw'])}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Mean node",
+          "filename": "Mean node.bru",
+          "seq": 3,
+          "settings": {
+            "encodeUrl": false
+          },
+          "tags": [],
+          "request": {
+            "url": "http://localhost:8000/graphs/demo/nodes",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"node_id\": \"mean_node\",\n  \"node_type\": \"lambda\",\n  \"lambda_expr\": \"{'mean': sum(inputs['ingest']['raw']) / len(inputs['ingest']['raw'])}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "merge node",
+          "filename": "merge node.bru",
+          "seq": 4,
+          "settings": {
+            "encodeUrl": false
+          },
+          "tags": [],
+          "request": {
+            "url": "http://localhost:8000/graphs/demo/nodes",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"node_id\": \"merge\",\n  \"node_type\": \"lambda\",\n  \"lambda_expr\": \"{\\\"sum\\\": inputs[\\\"sum_node\\\"][\\\"sum\\\"], \\\"mean\\\": inputs[\\\"mean_node\\\"][\\\"mean\\\"]}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "report node",
+          "filename": "report node.bru",
+          "seq": 5,
+          "settings": {
+            "encodeUrl": false
+          },
+          "tags": [],
+          "request": {
+            "url": "http://localhost:8000/graphs/demo/nodes",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"node_id\": \"report\",\n  \"node_type\": \"lambda\",\n  \"lambda_expr\": \"{\\\"text\\\": \\\"sum=\\\" + str(inputs[\\\"merge\\\"][\\\"sum\\\"]) + \\\" mean=\\\" + str(inputs[\\\"merge\\\"][\\\"mean\\\"])}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Bad node",
+          "filename": "Bad node.bru",
+          "seq": 7,
+          "settings": {
+            "encodeUrl": false
+          },
+          "tags": [],
+          "request": {
+            "url": "http://localhost:8000/graphs/demo/nodes",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"node_id\": \"bad_node\",\n  \"node_type\": \"fail\"\n}\n// {\n//   \"node_id\": \"bad_node\",\n//   \"node_type\": \"echo\"\n// }",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "final report",
+          "filename": "final report.bru",
+          "seq": 8,
+          "settings": {
+            "encodeUrl": false
+          },
+          "tags": [],
+          "request": {
+            "url": "http://localhost:8000/graphs/demo/nodes",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"node_id\": \"final_report\",\n  \"node_type\": \"lambda\",\n  \"lambda_expr\": \"{\\\"done\\\": True}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Register graph",
+          "filename": "Register graph.bru",
+          "seq": 1,
+          "settings": {
+            "encodeUrl": false
+          },
+          "tags": [],
+          "request": {
+            "url": "http://localhost:8000/graphs",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"graph_id\": \"demo\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "http",
+      "name": "Retry from particular step",
+      "filename": "Retry from particular step.bru",
+      "seq": 7,
+      "settings": {
+        "encodeUrl": true
+      },
+      "tags": [],
+      "request": {
+        "url": "http://localhost:8000/graphs/demo/rerun-from",
+        "method": "POST",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"node_id\": \"mean_node\"\n}",
           "formUrlEncoded": [],
           "multipartForm": [],
           "file": []
